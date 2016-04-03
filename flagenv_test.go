@@ -35,7 +35,7 @@ func TestFlagenv(t *testing.T) {
 	for _, testCase := range testCases {
 		var variable string
 		for key, value := range testCase.envs {
-			os.Setenv(key, value)
+			_ = os.Setenv(key, value)
 		}
 		flagenv.StringVar(&variable, testCase.flagName, testCase.defaultValue, "")
 		flagenv.Parse()
@@ -43,7 +43,7 @@ func TestFlagenv(t *testing.T) {
 			t.Error(fmt.Sprintf("expect %s, got %s", testCase.result, variable))
 		}
 		for key, _ := range testCase.envs {
-			os.Unsetenv(key)
+			_ = os.Unsetenv(key)
 		}
 	}
 }
