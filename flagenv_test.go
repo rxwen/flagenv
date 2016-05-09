@@ -12,9 +12,23 @@ import (
 var testCases = []struct {
 	envs         map[string]string
 	flagName     string
-	defaultValue string
-	result       string
+	defaultValue interface{}
+	result       interface{}
 }{
+	{
+		map[string]string{
+			"hello": "42",
+		},
+		"hello",
+		3,
+		42,
+	},
+	{
+		map[string]string{},
+		"hello",
+		3,
+		3,
+	},
 	{
 		map[string]string{
 			"hello": "zzz",
@@ -33,14 +47,25 @@ var testCases = []struct {
 
 func TestFlagenv(t *testing.T) {
 	for _, testCase := range testCases {
-		var variable string
 		for key, value := range testCase.envs {
 			_ = os.Setenv(key, value)
 		}
-		flagenv.StringVar(&variable, testCase.flagName, testCase.defaultValue, "")
-		flagenv.Parse()
-		if strings.Compare(testCase.result, variable) != 0 {
-			t.Error(fmt.Sprintf("expect %s, got %s", testCase.result, variable))
+		switch testCase.result.(type) {
+		case int:
+			var variable int
+			flagenv.IntVar(&variable, testCase.flagName, testCase.defaultValue.(int), "")
+			flagenv.Parse()
+			fmt.Println("variable is %d", variable)
+			if testCase.result.(int) != variable {
+				t.Error(fmt.Sprintf("expect %d, got %d", testCase.result, variable))
+			}
+		case string:
+			var variable string
+			flagenv.StringVar(&variable, testCase.flagName, testCase.defaultValue.(string), "")
+			flagenv.Parse()
+			if strings.Compare(testCase.result.(string), variable) != 0 {
+				t.Error(fmt.Sprintf("expect %s, got %s", testCase.result, variable))
+			}
 		}
 		for key, _ := range testCase.envs {
 			_ = os.Unsetenv(key)
