@@ -65,6 +65,14 @@ var testCases = []struct {
 		false,
 		false,
 	},
+	{
+		map[string]string{
+			"hello": "not-true",
+		},
+		"hello",
+		true,
+		false,
+	},
 }
 
 func TestFlagenv(t *testing.T) {
