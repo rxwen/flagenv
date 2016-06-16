@@ -43,6 +43,28 @@ var testCases = []struct {
 		"mmm",
 		"mmm",
 	},
+	{
+		map[string]string{},
+		"hello",
+		true,
+		true,
+	},
+	{
+		map[string]string{
+			"hello": "true",
+		},
+		"hello",
+		false,
+		true,
+	},
+	{
+		map[string]string{
+			"hello": "not-true",
+		},
+		"hello",
+		false,
+		false,
+	},
 }
 
 func TestFlagenv(t *testing.T) {
@@ -65,6 +87,13 @@ func TestFlagenv(t *testing.T) {
 			flagenv.Parse()
 			if strings.Compare(testCase.result.(string), variable) != 0 {
 				t.Error(fmt.Sprintf("expect %s, got %s", testCase.result, variable))
+			}
+		case bool:
+			var variable bool
+			flagenv.BoolVar(&variable, testCase.flagName, testCase.defaultValue.(bool), "")
+			flagenv.Parse()
+			if testCase.result.(bool) != variable {
+				t.Error(fmt.Sprintf("expect %b, got %b", testCase.result, variable))
 			}
 		}
 		for key, _ := range testCase.envs {
