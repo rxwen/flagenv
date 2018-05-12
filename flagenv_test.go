@@ -85,7 +85,6 @@ func TestFlagenv(t *testing.T) {
 			var variable int
 			flagenv.IntVar(&variable, testCase.flagName, testCase.defaultValue.(int), "")
 			flagenv.Parse()
-			fmt.Println("variable is %d", variable)
 			if testCase.result.(int) != variable {
 				t.Error(fmt.Sprintf("expect %d, got %d", testCase.result, variable))
 			}
@@ -101,7 +100,7 @@ func TestFlagenv(t *testing.T) {
 			flagenv.BoolVar(&variable, testCase.flagName, testCase.defaultValue.(bool), "")
 			flagenv.Parse()
 			if testCase.result.(bool) != variable {
-				t.Error(fmt.Sprintf("expect %b, got %b", testCase.result, variable))
+				t.Error(fmt.Sprintf("expect %t, got %t", testCase.result, variable))
 			}
 		}
 		for key, _ := range testCase.envs {
